@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.css' rel='stylesheet' />
+    <title>Document</title>
+</head>
+<style>
+    body
+    {background:black;margin:0}
+.form{
+    width:340px;height:440px;background:#e6e6e6;border-radius:8px;box-shadow:0 0 40px -10px #000;margin:calc(50vh - 220px) auto;padding:20px 30px;max-width:calc(100vw - 40px);box-sizing:border-box;font-family:'Montserrat',sans-serif;position:relative}
+h2{
+    margin:10px 0;padding-bottom:10px;width:180px;color:#78788c;border-bottom:3px solid #78788c}
+/* input{
+    width:100%;padding:10px;box-sizing:border-box;background:none;outline:none;resize:none;border:0;font-family:'Montserrat',sans-serif;transition:all .3s;border-bottom:2px solid #bebed2} */
+   
+    input {
+  padding: .25rem 0;
+  border: 0;
+  border-bottom: 1px solid black;
+  outline: 0;
+  background: transparent;
+  color:black;
+  font-size: 20px;
+  line-height: 4rem;
+  letter-spacing: .125rem;
+}
+
+
+button{float:right;padding:8px 12px;margin:8px 0 0;font-family:'Montserrat',sans-serif;border:2px solid #78788c;background:0;color:#5a5a6e;cursor:pointer;transition:all .3s}
+button:hover{background:#78788c;color:#fff}
+span{margin:0 5px 0 15px}
+</style>
+<body>
+    <form class="form">
+        <h2>CONTACT US</h2>
+        <input type="text" name="naming" id="name" value="" placeholder="Enter name"></input>
+        <input type="text" id="password" name="pass" value="" placeholder="Enter password"></input>
+
+        <input type="text" id="email" name="id" value="" placeholder="Enter email"></input>
+        <input type="text" id="mesage" name="message" value="" placeholder="Enter message"></input>
+        <button  id="button">Send Message</button>
+      
+      </form>
+
+
+      <div id='map' style='width: 1200px; height: 1200px;'></div>
+
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+
+
+
+<script>
+
+var button = document.getElementById("button");
+
+
+var sendmailtome = async(data) =>{
+
+     try{
+console.log(data);
+        const response = await axios({
+
+            method:'PATCH',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                url:'http://localhost:3000/api/master/send',
+                 data
+                
+        });
+        if(response.data.status==='success'){
+
+alert("Message sent to Nikunj will reply you soon");
+
+        }else{
+            alert("try again");
+        }
+
+
+     }catch(err){
+     }
+
+}
+
+
+if(button){
+button.addEventListener('click',(e)=>{
+    e.preventDefault();
+
+var forml = new FormData();
+console.log(document.getElementById("name").value);
+
+var naming = document.getElementById("name").value;
+var id = document.getElementById("email").value;
+var pass = document.getElementById("password").value;
+var message = document.getElementById("mesage").value;
+
+
+forml.append('naming',document.getElementById("name").value);
+
+forml.append('id',document.getElementById("email").value);
+forml.append('password',document.getElementById("password").value);
+forml.append('message',document.getElementById("mesage").value);
+console.log(forml);
+sendmailtome(forml);
+
+})
+}
+
+
+if(navigator.geolocation){
+
+     
+navigator.geolocation.getCurrentPosition((position)=>{
+
+console.log(position.coords.latitude,position.coords.longitude);
+
+const url = `http://localhost:3000/api/locationurl?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}`;
+
+mapboxgl.accessToken = 'pk.eyJ1IjoibmlrdW5qMTIiLCJhIjoiY2tqeDRkNTZsMDhiZzJ1cG40a3RuaDBkbyJ9.I-RDcCJ0GG6OiqtNxDCE5g';
+var map = new mapboxgl.Map({
+container: 'map',
+style: 'mapbox://styles/nikunj12/ckjx4t1fp0hdf17s4zia8y260'
+});
+
+var marker = new mapboxgl.Marker({
+    color:'#FFFFFF',
+    draggable:true
+})
+.setLngLat([position.coords.longitude,position.coords.latitude])
+.addTo(map);
+;
+
+
+//window.location.href = url;
+
+},(error)=>{
+
+if(error.PERMISSION_DENIED){
+
+
+
+}else{
+
+
+
+
+}
+    
+});
+
+
+}else{
+
+alert("Not supported");
+
+}
+
+</script>
+</html>
