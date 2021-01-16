@@ -15,16 +15,15 @@ res.sendFile(path.join(__dirname,'./public','contactact.html'));
 router.patch('/send' , upload.none(),async(req,res)=>{
 
       const {naming,id,message,pass} = req.body;
-   console.log(naming , req.body.naming);
+   console.log(naming , req.body.naming); 
 try{
     
     const user = await User.create({
 
           name:naming,      
           emailid:id,
-         password:pass,
-        mess:message
-    });
+         password:pass
+          });
 
  const token =await jwt.sign({id:user._id} , 'secrettokeniusedforjsonwebtokendontcopyit' ,{expiresIn:24*24*(60*60)});
 
