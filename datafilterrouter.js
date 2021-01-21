@@ -1,34 +1,15 @@
 const express = require("express");
 const Users = require("./Schemas/Users");
+const Features =  require('./features');
+const uploadcontroller = require('./uploadcontroller');
 
 const router = express.Router();
 
 router.route("/filter").get(async (req, res) => {
-  const queryobj = { ...req.query }; // destructureing of query object
-  console.log(queryobj);
-  const allpara =['page','limit'];
-  allpara.forEach(element=> delete queryobj[element])
-
-  let querystring = JSON.stringify(queryobj);
-  querystring = querystring.replace("gte", "$gte");
-  console.log(JSON.parse(querystring));
-
-  const pag = req.query.page * 1 ;
-  const limi = req.query.limit * 1;
-  
-  console.log(pag,limi);
-  
-
-  let query = Users.find(JSON.parse(querystring))
-  
-//   .sort("age")
  
+const feat = new Features(Users.find() , req.query).filter();
 
-  query = query.sort("age");
-
-  query = query.skip(pag).limit(limi);
-
-  const totalres = await query;
+  const totalres = await feat.queryob;
   console.log(totalres);
 
   // const q = await Users.find();
@@ -36,5 +17,9 @@ router.route("/filter").get(async (req, res) => {
   //console.log(query);
   //console.log(q);
 });
+
+router
+.route('/upload')
+.post(uploadcontroller.uploadimage,uploadcontroller.savefilename);
 
 module.exports = router;
